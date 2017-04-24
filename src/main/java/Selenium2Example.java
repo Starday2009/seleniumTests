@@ -6,6 +6,8 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.concurrent.TimeUnit;
+
 public class Selenium2Example {
     public static void main(String[] args) throws InterruptedException {
         // Create a new instance of the Firefox driver
@@ -33,6 +35,7 @@ public class Selenium2Example {
         loginButton.click();
 
         //Creating sub-task
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         WebElement addSubButton =  driver.findElement(By.xpath(".//*[@id='stqc_show']"));
         addSubButton.click();
 
@@ -43,14 +46,11 @@ public class Selenium2Example {
 
         WebElement assignButton =  driver.findElement(By.xpath(" .//*[@id='assign-to-me-trigger']"));
         assignButton.click();
-
-        WebElement submitButton =  driver.findElement(By.xpath(".//*[@id='create-issue-submit']"));
+        WebElement submitButton =  driver.findElement(By.xpath(".//*[@id='subtask-create-details-submit']"));
         submitButton.click();
-
-
 
         //Close the browser
 
-        //driver.quit();
+        driver.quit();
     }
 }
