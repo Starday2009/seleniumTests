@@ -5,52 +5,42 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeTest;
 import java.util.concurrent.TimeUnit;
 
 public class Selenium2Example {
-    public static void main(String[] args) throws InterruptedException {
-        // Create a new instance of the Firefox driver
-        // Notice that the remainder of the code relies on the interface,
-        // not the ismplementation.
+        LoginPage loginPage;
+        WebDriver driver;
+        Header header;
+        @BeforeTest
+                public void before() {
+            System.setProperty("webdriver.gecko.driver", "C:\\Selenium\\geckodriver.exe");
+            DesiredCapabilities capabilities = DesiredCapabilities.firefox();
+            capabilities.setCapability("marionette", true);
 
-        System.setProperty("webdriver.gecko.driver", "C:\\Selenium\\geckodriver.exe");
-        DesiredCapabilities capabilities = DesiredCapabilities.firefox();
-        capabilities.setCapability("marionette", true);
-        WebDriver driver = new FirefoxDriver(capabilities);
+            driver = new FirefoxDriver(capabilities);
+            loginPage = new LoginPage(driver);
+            header = new Header(driver);
+        }
 
-        // And now use this to visit Google
-        driver.get("http://soft.it-hillel.com.ua:8080/browse/QAAUT-60");
+        @Test(groups = {"functest", "login"})
+        public void login(){
+            loginPage.open();
+            loginPage.typeUsername("oksana.gorbachenko.2009");
+            loginPage.typePassword("123456qwerty");
+            loginPage.clickOnLogin();
+            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+            header.clickCreate();
 
-        //login
-        WebElement loginField = driver.findElement(By.xpath(".//*[@id='login-form-username']"));
-        loginField.clear();
-        loginField.sendKeys("oksana.gorbachenko.2009");
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
-        WebElement passwordField =  driver.findElement(By.xpath(".//*[@id='login-form-password']"));
-        passwordField.clear();
-        passwordField.sendKeys("123456qwerty");
-
-        WebElement loginButton =  driver.findElement(By.xpath(".//*[@id='login-form-submit']"));
-        loginButton.click();
-
-        //Creating sub-task
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        WebElement addSubButton =  driver.findElement(By.xpath(".//*[@id='stqc_show']"));
-        addSubButton.click();
-
-        WebElement summaryField =  driver.findElement(By.xpath(".//*[@id='summary']"));
-        summaryField.clear();
-        summaryField.sendKeys("Oksana`s Sub-Task");
-
-
-        WebElement assignButton =  driver.findElement(By.xpath(" .//*[@id='assign-to-me-trigger']"));
-        assignButton.click();
-        WebElement submitButton =  driver.findElement(By.xpath(".//*[@id='subtask-create-details-submit']"));
-        submitButton.click();
-
-        //Close the browser
-
-        driver.quit();
-    }
+        }
+     // @AfterTest
+            //  public void after(){ driver.quit();}
 }
